@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server/index.js",
     "doctor": "node server/doctor.js",
-    "test": "node --test test/*.test.js",
+    "test": "node --test --test-timeout=180000 test/*.test.js",
     "demo": "node scripts/demo.js"
   },
   "dependencies": {

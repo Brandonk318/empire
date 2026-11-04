@@ -458,7 +458,7 @@ export function createWorld(canvas, { lite = false } = {}) {
       const out = new THREE.Vector3(Math.cos(d.angle), 0, Math.sin(d.angle));
       const side = new THREE.Vector3(-out.z, 0, out.x);
       views[d.id] = {
-        pos: d.pos.clone().addScaledVector(out, 8 * far).addScaledVector(side, 1.8).add(new THREE.Vector3(0, 5.2 * far, 0)),
+        pos: d.pos.clone().addScaledVector(out, 8.5 * far).addScaledVector(side, 1.8).add(new THREE.Vector3(0, 7 * far, 0)),
         target: d.pos.clone().add(new THREE.Vector3(0, 1.8, 0)).addScaledVector(out, -1.2),
       };
     }
@@ -599,7 +599,6 @@ export function createWorld(canvas, { lite = false } = {}) {
   return {
     flyTo,
     growlord,
-    _cam: () => ({ pos: camera.position.toArray().map(v=>+v.toFixed(2)), target: controls.target.toArray().map(v=>+v.toFixed(2)), flight: !!flight }),
     get current() {
       return current;
     },

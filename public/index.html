@@ -15,6 +15,8 @@
 </head>
 <body>
   <canvas id="scene" aria-label="3D island with five districts and Growlord"></canvas>
+  <div id="banner" class="banner" hidden>Growlord restarted. <button id="reloadBtn">Reload page</button></div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
 
   <header class="topbar">
     <div class="brand">
@@ -41,8 +43,12 @@
       <button role="tab" data-tab="workshop">Workshop <span id="wsBadge" class="badge" hidden>0</span></button>
     </div>
     <section id="tab-talk" class="tab active">
+      <div class="toolbar">
+        <button id="newTopic" class="ghost small" title="Forget earlier questions so follow-ups start fresh">New topic</button>
+        <button id="addBiz" class="ghost small" title="Add a fact to the business file (needs your approval)">+ Add to business file</button>
+      </div>
       <div id="transcript" class="transcript" aria-live="polite">
-        <div class="msg growlord">Ask me about leads, ads, the inbox, or sales. Say <b>"build ..."</b> to start a build. I only answer from the business file.</div>
+        <div class="msg growlord">Ask me about leads, ads, the inbox, or sales. Say <b>"build ..."</b> to start a build, or <b>"remember that ..."</b> to add to the business file. I only answer from the business file.</div>
       </div>
     </section>
     <section id="tab-workshop" class="tab">
@@ -69,6 +75,23 @@
       <button id="doctorRun">Run again</button>
       <button id="doctorClose" class="ghost">Close</button>
     </div>
+  </dialog>
+
+  <dialog id="bizDialog">
+    <form id="bizForm" method="dialog">
+      <h2>Add to business file</h2>
+      <p class="muted">Nothing changes until you approve it in the Workshop. The old version is backed up first.</p>
+      <label class="field">File<select id="bizFile"></select></label>
+      <label class="field" id="bizNewFileWrap" hidden>New file name<input id="bizNewFile" placeholder="pricing" /></label>
+      <label class="field">Section<select id="bizSection"></select></label>
+      <label class="field" id="bizNewSectionWrap" hidden>New section name<input id="bizNewSection" placeholder="Workshops" /></label>
+      <label class="field">Fact<textarea id="bizText" rows="3" required placeholder="Next Philippines workshop: March 14, Cebu Technological University"></textarea></label>
+      <p id="bizError" class="err"></p>
+      <div class="row">
+        <button type="submit" class="approve">Draft for approval</button>
+        <button type="button" id="bizCancel" class="ghost">Cancel</button>
+      </div>
+    </form>
   </dialog>
 
   <script type="module" src="/app.js"></script>

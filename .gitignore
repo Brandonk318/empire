@@ -6,3 +6,5 @@ briefs/*
 !briefs/.gitkeep
 __pycache__/
 *.pyc
+state/
+business/.history/

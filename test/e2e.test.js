@@ -2,48 +2,14 @@
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { startServer as boot, waitFor, killAll } from './helpers.js';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const FAKE = path.join(ROOT, 'test/fixtures/fake-claude.js');
-const procs = [];
-after(() => procs.forEach((p) => p.kill()));
+after(killAll);
 
 async function startServer(mode) {
-  const port = 4800 + Math.floor(Math.random() * 1000);
-  const data = fs.mkdtempSync(path.join(os.tmpdir(), `growlord-e2e-${mode}-`));
-  const p = spawn(process.execPath, [path.join(ROOT, 'server/index.js')], {
-    env: { ...process.env, PORT: String(port), GROWLORD_BRAIN: 'mock', GROWLORD_QUIET: '1', GROWLORD_DATA_DIR: data, CODING_AGENT_BIN: FAKE, FAKE_CLAUDE_MODE: mode, KOKORO_URL: 'http://127.0.0.1:9' },
-    stdio: 'ignore',
-  });
-  procs.push(p);
-  const base = `http://127.0.0.1:${port}`;
-  for (let i = 0; i < 50; i++) {
-    try {
-      const html = await (await fetch(base + '/')).text();
-      const session = html.match(/growlord-session" content="([0-9a-f]{48})"/)[1];
-      const call = async (method, p, body) => {
-        const r = await fetch(base + p, { method, headers: { 'content-type': 'application/json', 'x-growlord-session': session }, body: body && JSON.stringify(body) });
-        return { status: r.status, body: await r.json() };
-      };
-      return { base, data, call };
-    } catch {
-      await new Promise((r) => setTimeout(r, 100));
-    }
-  }
-  throw new Error('server did not start');
-}
-
-async function waitFor(call, id, statuses) {
-  for (let i = 0; i < 100; i++) {
-    const r = await call('GET', `/api/actions/${id}`);
-    if (statuses.includes(r.body.status)) return r.body;
-    await new Promise((r) => setTimeout(r, 100));
-  }
-  throw new Error('timed out waiting for action');
+  const s = await boot({ FAKE_CLAUDE_MODE: mode });
+  return { base: s.base, data: s.box.dir, call: async (m, p, b) => s.call(m, p, b) };
 }
 
 test('three questions answered from business.md fly to the right district', async () => {

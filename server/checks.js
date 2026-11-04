@@ -2,7 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { config, hasXaiKey, ROOT } from './config.js';
-import { detectGrokCli, resolveBrain } from './brain.js';
+import { detectGrokCli, resolveBrain, listXaiModels } from './brain.js';
+import * as business from './business.js';
 import { preflight } from './agent.js';
 import { ttsAvailable } from './tts.js';
 
@@ -31,14 +32,22 @@ export async function runChecks({ includeAgent = true } = {}) {
   if (fs.existsSync(path.join(ROOT, '.env'))) add('.env file', 'ok', '.env found (values are never printed)');
   else add('.env file', 'warn', 'No .env file', 'cp .env.example .env  and fill in XAI_API_KEY');
 
-  // business.md
-  if (!fs.existsSync(config.businessFile)) add('business.md', 'fail', 'Missing', 'Restore business.md in the project root');
+  // Business knowledge: business.md + business/*.md
+  const k = business.load();
+  if (!k.files.length) add('Business files', 'fail', 'No business.md and no business/*.md', 'Restore business.md in the project root');
   else {
-    const md = fs.readFileSync(config.businessFile, 'utf8');
-    const missing = REQUIRED_SECTIONS.filter((s) => !new RegExp(`^##\\s+${s}\\s*$`, 'm').test(md));
-    const fills = (md.match(/\[FILL IN\]/g) || []).length;
-    if (missing.length) add('business.md', 'fail', `Missing sections: ${missing.join(', ')}`, 'Add the missing ## sections');
-    else add('business.md', fills ? 'warn' : 'ok', `${md.length} chars, all core sections present${fills ? `, ${fills} [FILL IN] gaps` : ''}`);
+    const titles = new Set(k.sections.map((x) => x.title));
+    const missing = REQUIRED_SECTIONS.filter((x) => !titles.has(x));
+    const names = k.files.map((f) => f.rel).join(', ');
+    if (missing.length) add('Business files', 'fail', `Missing sections: ${missing.join(', ')} (in ${names})`, 'Add the missing ## sections');
+    else {
+      const notes = [];
+      if (k.fillIns) notes.push(`${k.fillIns} [FILL IN] gap(s)`);
+      if (k.chars > config.businessMaxChars) notes.push(`${k.chars} chars is over the ${config.businessMaxChars} limit; trim or split it so Grok sees all of it`);
+      const empty = k.files.filter((f) => !f.sections.length).map((f) => f.rel);
+      if (empty.length) notes.push(`no "## " sections in ${empty.join(', ')}, so answers can't cite them`);
+      add('Business files', notes.length ? 'warn' : 'ok', `${k.files.length} file(s): ${names}; ${k.sections.length} sections, ${k.chars} chars${notes.length ? '; ' + notes.join('; ') : ''}`);
+    }
   }
 
   // Grok CLI (detected, never assumed)
@@ -54,8 +63,21 @@ export async function runChecks({ includeAgent = true } = {}) {
   const brain = await resolveBrain();
   if (brain.kind === 'none') add('Grok brain', 'fail', brain.detail, 'Put XAI_API_KEY in .env (or install a Grok CLI)');
   else if (brain.kind === 'xai') {
-    const k = await checkXaiKey();
-    add('Grok brain', k.status, `${brain.detail}. ${k.detail}`);
+    const key = await checkXaiKey();
+    add('Grok brain', key.status, `${brain.detail}. ${key.detail}`);
+    if (key.status === 'ok') {
+      try {
+        const models = await listXaiModels();
+        if (!models.length) add('Grok model', 'warn', 'xAI returned no model list; could not confirm GROK_MODEL');
+        else if (models.includes(config.grokModel)) add('Grok model', 'ok', `${config.grokModel} is available to your key`);
+        else {
+          const grok = models.filter((m) => /grok/i.test(m)).slice(0, 6);
+          add('Grok model', 'fail', `GROK_MODEL=${config.grokModel} is not in your account's models`, `Set GROK_MODEL in .env to one of: ${(grok.length ? grok : models.slice(0, 6)).join(', ')}`);
+        }
+      } catch (e) {
+        add('Grok model', 'warn', `Could not list models: ${e.message}`);
+      }
+    }
   } else add('Grok brain', brain.kind === 'mock' ? 'warn' : 'ok', brain.detail, brain.kind === 'mock' ? 'Set GROWLORD_BRAIN=auto for real answers' : undefined);
 
   // Coding agent

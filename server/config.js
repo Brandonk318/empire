@@ -31,11 +31,15 @@ const DATA = env.GROWLORD_DATA_DIR ? path.resolve(env.GROWLORD_DATA_DIR) : ROOT;
 export const config = {
   host: '127.0.0.1', // localhost only, not configurable on purpose
   port: Number(env.PORT || 4747),
-  businessFile: path.join(ROOT, 'business.md'),
+  // Business knowledge: business.md plus every .md file in business/ (both re-read on every question)
+  businessFile: env.GROWLORD_BUSINESS_FILE ? path.resolve(env.GROWLORD_BUSINESS_FILE) : path.join(ROOT, 'business.md'),
+  businessDir: env.GROWLORD_BUSINESS_DIR ? path.resolve(env.GROWLORD_BUSINESS_DIR) : path.join(ROOT, 'business'),
+  businessMaxChars: Number(env.BUSINESS_MAX_CHARS || 200_000),
   // GROWLORD_DATA_DIR moves briefs/, logs/, builds/ (tests use a temp folder)
   briefsDir: path.join(DATA, 'briefs'),
   logsDir: path.join(DATA, 'logs'),
   buildsDir: path.join(DATA, 'builds'),
+  stateDir: path.join(DATA, 'state'), // saved Workshop actions survive restarts
   publicDir: path.join(ROOT, 'public'),
 
   // Brain: auto | xai | cli | mock
@@ -43,6 +47,7 @@ export const config = {
   xaiBaseUrl: env.XAI_BASE_URL || 'https://api.x.ai/v1',
   grokModel: env.GROK_MODEL || 'grok-4',
   grokBin: env.GROK_BIN || 'grok',
+  historyTurns: Number(env.HISTORY_TURNS || 6), // remembered exchanges for follow-up questions
 
   // Coding agent
   agentBin: env.CODING_AGENT_BIN || 'claude',

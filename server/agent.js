@@ -50,6 +50,21 @@ export function classifyFailure({ apiStatus, text = '', notFound = false, timedO
   return 'other';
 }
 
+// On Windows, npm-installed CLIs are .cmd shims, which Node can only start through cmd.exe.
+// Our arguments are fixed strings without cmd metacharacters, so quoting them is safe.
+const IS_WIN = process.platform === 'win32';
+function winQuote(a) {
+  return /[\s"]/.test(a) ? `"${String(a).replace(/"/g, '\\"')}"` : a;
+}
+export function spawnCli(bin, args, opts) {
+  if (!IS_WIN) return spawn(bin, args, opts);
+  return spawn([bin, ...args].map(winQuote).join(' '), [], { ...opts, shell: true, windowsHide: true });
+}
+// cmd.exe reports a missing program as exit code 9009 or "is not recognized".
+function winNotFound(code, err) {
+  return IS_WIN && (code === 9009 || /is not recognized as an internal or external command/i.test(err));
+}
+
 // The coding agent never needs Growlord's xAI key.
 function childEnv() {
   const env = { ...process.env };
@@ -64,7 +79,7 @@ function runOnce(args, { timeoutMs, cwd } = {}) {
     let err = '';
     let child;
     try {
-      child = spawn(config.agentBin, args, { cwd, env: childEnv(), stdio: ['ignore', 'pipe', 'pipe'] });
+      child = spawnCli(config.agentBin, args, { cwd, env: childEnv(), stdio: ['ignore', 'pipe', 'pipe'] });
     } catch (e) {
       return resolve({ code: -1, out, err: String(e), notFound: e.code === 'ENOENT' });
     }
@@ -77,7 +92,7 @@ function runOnce(args, { timeoutMs, cwd } = {}) {
     });
     child.on('close', (code, signal) => {
       clearTimeout(timer);
-      resolve({ code, out, err, timedOut: signal === 'SIGKILL' });
+      resolve({ code, out, err, timedOut: signal === 'SIGKILL', notFound: winNotFound(code, err) });
     });
   });
 }
@@ -125,7 +140,7 @@ export function buildPromptText() {
 }
 
 export function manualCommand(dir) {
-  return `cd "${dir}" && ${config.agentBin} -p "${buildPromptText()}" --permission-mode acceptEdits --allowedTools "${config.buildAllowedTools}"`;
+  return `cd ${IS_WIN ? '/d ' : ''}"${dir}" && ${config.agentBin} -p "${buildPromptText()}" --permission-mode acceptEdits --allowedTools "${config.buildAllowedTools}"`;
 }
 
 function describeTool(block) {
@@ -180,7 +195,7 @@ export async function runBuild(action) {
   await new Promise((resolve) => {
     let child;
     try {
-      child = spawn(config.agentBin, args, { cwd: buildDir, env: childEnv(), stdio: ['ignore', 'pipe', 'pipe'] });
+      child = spawnCli(config.agentBin, args, { cwd: buildDir, env: childEnv(), stdio: ['ignore', 'pipe', 'pipe'] });
       running.add(child);
     } catch (e) {
       fail(action, 'not_installed', String(e));

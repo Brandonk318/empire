@@ -14,39 +14,29 @@ A: Gmail. Tone is warm and respectful, with local greetings: "Magandang araw po"
 ✔ district inbox
 
 === 2. Approved build, end to end (real coding agent) ===
-Brief: briefs/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin.md
+Brief: briefs/2026-11-04-a-one-page-html-flyer-for-the-free-permit.md
 Pre-flight: OK - 2.1.318 (Claude Code): logged in, under limit (test call answered "OK")
 Approved. Streaming progress:
    · Pre-flight check of the coding agent...
    · Pre-flight OK (2.1.318 (Claude Code))
-   · Handing off to claude in builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin
+   · Handing off to claude in builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit
    · Agent session started (claude-opus-5-5)
-   → Bash: ls -la && cat BRIEF.md && git log --oneline | head
-   → Bash: git status && git show --stat HEAD && ls -la .. ../.. ; find /home/user/empire -maxdepth 3 -name "*.md" | head -30
-   · tool error: This Bash command contains multiple operations. The following part requires approval: git status && git show --stat HEAD && ls -
-   → Bash: git -C /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin show --stat HEAD
-   · tool error: This command requires approval
+   → Bash: ls -la && cat BRIEF.md
+   → Bash: cd /home/user/empire && ls -la; ls builds; find . -maxdepth 3 -iname "*business*" -o -maxdepth 3 -iname "*.md" | grep -v
+   · tool error: This Bash command contains multiple operations. The following part requires approval: cd /home/user/empire && ls -la; ls builds;
    → Glob: **/*.md
    → Read: /home/user/empire/business.md
-   → Read: /home/user/empire/README.md
-   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin/index.html
-   · Flyer written. Next I'll tidy one CSS detail and check the page for errors before writing SUMMARY.md.
-   → Edit: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin/index.html
-   → Bash: cd /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin; grep -nE 'src=|href=|url\(|@imp
-   · tool error: Exit code 1
-   · No external references. Rendering it headless to confirm it loads cleanly:
-   → Bash: cd /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin; S=/tmp/claude-0/-home-user-empi
-   · tool error: A variable in this command can't be checked before it runs
-   → Bash: timeout 60 google-chrome --headless=new --no-sandbox --disable-gpu --enable-logging=stderr --window-size=850,1100 --scre
-   · tool error: This Bash command contains multiple operations. The following part requires approval: timeout 60 google-chrome --headless=new --
-   · Running Chrome needs approval here, so I'll check the HTML structure with Python's parser instead.
+   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit/index.html
+   · Flyer is written. Now I'm checking that it parses cleanly and doesn't load any external assets.
    → Bash: python3 -I -c "
-   · tool error: This command requires approval
-   · I can't run commands without approval here, so I reviewed the file by hand: the tags are balanced, there's no JavaScript, and nothing loads 
-   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin/SUMMARY.md
-   · I've made the flyer as a single `index.html` and written `SUMMARY.md`, both in the build folder. I haven't opened it in a browser yet. Runni
-   · Build finished in 14 turns. Output is in /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin
-✔ build succeeded -> builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin
+   · tool error: This Bash command contains multiple operations. The following part requires approval: python3 -I -c '
+   · Python needs approval here, so I'll check with Grep instead.
+   → Grep: src=|href=|url\(|@import|https?://|<script
+   → Grep: PLACEHOLDER:
+   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit/SUMMARY.md
+   · I've built the flyer as `index.html`, a single file with no external assets, and written `SUMMARY.md`. I haven't opened it in a browser; I c
+   · Build finished in 10 turns. Output is in /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit
+✔ build succeeded -> builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit
 
 === 3. Build while logged out (invalid credentials, empty config) ===
 Growlord: I wrote and saved the brief for a logged-out test page, but the coding agent isn't ready: Expired or missing login. The details are in the Workshop.
@@ -60,4 +50,3 @@ Run it by hand:
 Full log: logs/chain.log
 
 All checks passed.
-exit=0
