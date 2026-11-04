@@ -1,0 +1,52 @@
+
+=== 1. Three questions (MOCK brain: offline keyword match, not Grok) ===
+Q: How do we get new leads?
+A: Free permit-readiness workshops co-hosted with trade schools (Philippines, Nigeria) AI-generated leads handed to closers (no cold calling)
+   -> camera flies to: leads (brain: mock)
+✔ district leads
+Q: Should we run paid ads right now?
+A: Free channels only by default (outreach, workshops, referrals, free education, organic social). Paid ads ONLY if the free channels aren't working, capped at about $200/month, and only with Brandon's approval. Paid platforms (if ever used): Facebook, Google, TikTok, YouTube.
+   -> camera flies to: ads (brain: mock)
+✔ district ads
+Q: How should I greet people in emails to the Philippines?
+A: Gmail. Tone is warm and respectful, with local greetings: "Magandang araw po" (Philippines), "Dear Sir/Ma" (Nigeria).
+   -> camera flies to: inbox (brain: mock)
+✔ district inbox
+
+=== 2. Approved build, end to end (real coding agent) ===
+Brief: briefs/2026-11-04-a-one-page-html-flyer-for-the-free-permit.md
+Pre-flight: OK - 2.1.318 (Claude Code): logged in, under limit (test call answered "OK")
+Approved. Streaming progress:
+   · Pre-flight check of the coding agent...
+   · Pre-flight OK (2.1.318 (Claude Code))
+   · Handing off to claude in builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit
+   · Agent session started (claude-opus-5-5)
+   → Bash: ls -la && cat BRIEF.md
+   → Bash: cd /home/user/empire && ls -la; ls builds; find . -maxdepth 3 -iname "*business*" -o -maxdepth 3 -iname "*.md" | grep -v
+   · tool error: This Bash command contains multiple operations. The following part requires approval: cd /home/user/empire && ls -la; ls builds;
+   → Glob: **/*.md
+   → Read: /home/user/empire/business.md
+   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit/index.html
+   · Flyer is written. Now I'm checking that it parses cleanly and doesn't load any external assets.
+   → Bash: python3 -I -c "
+   · tool error: This Bash command contains multiple operations. The following part requires approval: python3 -I -c '
+   · Python needs approval here, so I'll check with Grep instead.
+   → Grep: src=|href=|url\(|@import|https?://|<script
+   → Grep: PLACEHOLDER:
+   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit/SUMMARY.md
+   · I've built the flyer as `index.html`, a single file with no external assets, and written `SUMMARY.md`. I haven't opened it in a browser; I c
+   · Build finished in 10 turns. Output is in /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit
+✔ build succeeded -> builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit
+
+=== 3. Build while logged out (invalid credentials, empty config) ===
+Growlord: I wrote and saved the brief for a logged-out test page, but the coding agent isn't ready: Expired or missing login. The details are in the Workshop.
+✔ pre-flight caught it before handoff: expired_login
+   · Pre-flight check of the coding agent...
+   · Expired or missing login: Invalid API key · Fix external API key
+✔ failed clearly: Expired or missing login
+✔ brief kept at briefs/2026-11-04-a-logged-out-test-page.md
+Run it by hand:
+   cd "/home/user/empire/builds/2026-11-04-a-logged-out-test-page" && claude -p "Read BRIEF.md in this folder and build exactly what it describes, here in this folder. Do not send, post, email, publish, deploy, push to git, or contact anyone. When finished, write SUMMARY.md listing the files you made and how to check them." --permission-mode acceptEdits --allowedTools "Read,Write,Edit,Glob,Grep,Bash(ls:*),Bash(mkdir:*),Bash(cat:*),Bash(wc:*)"
+Full log: logs/chain.log
+
+All checks passed.
