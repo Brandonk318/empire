@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="growlord-session" content="__GROWLORD_SESSION__" />
+  <title>Growlord Command Center</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script type="importmap">
+    { "imports": {
+        "three": "/vendor/three/build/three.module.js",
+        "three/addons/": "/vendor/three/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <canvas id="scene" aria-label="3D island with five districts and Growlord"></canvas>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <h1>Growlord</h1>
+        <p>The AI Empire Project</p>
+      </div>
+    </div>
+    <nav class="districts" aria-label="Districts">
+      <button data-go="overview" class="active">Overview</button>
+      <button data-go="leads">Leads</button>
+      <button data-go="ads">Ads</button>
+      <button data-go="inbox">Inbox</button>
+      <button data-go="sales">Sales</button>
+      <button data-go="workshop">Workshop</button>
+    </nav>
+    <button id="doctorBtn" class="ghost" title="Check everything before first use">Doctor</button>
+  </header>
+
+  <aside id="panel" class="panel">
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="talk" class="active">Talk</button>
+      <button role="tab" data-tab="workshop">Workshop <span id="wsBadge" class="badge" hidden>0</span></button>
+    </div>
+    <section id="tab-talk" class="tab active">
+      <div id="transcript" class="transcript" aria-live="polite">
+        <div class="msg growlord">Ask me about leads, ads, the inbox, or sales. Say <b>"build ..."</b> to start a build. I only answer from the business file.</div>
+      </div>
+    </section>
+    <section id="tab-workshop" class="tab">
+      <div id="workshop" class="workshop">
+        <p class="muted">No briefs yet. Say <b>"build"</b> and what you want, for example: <i>build a one-page flyer for the permit-readiness workshop</i>.</p>
+      </div>
+    </section>
+  </aside>
+
+  <form id="askForm" class="askbar" autocomplete="off">
+    <button type="button" id="mic" class="mic" aria-label="Hold to talk" title="Hold to talk (or hold Space)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+    </button>
+    <input id="askInput" type="text" placeholder="Hold the mic, or type a question..." maxlength="4000" />
+    <button type="submit" class="send">Ask</button>
+    <span id="status" class="status" aria-live="polite"></span>
+  </form>
+
+  <dialog id="doctor">
+    <h2>Doctor</h2>
+    <p class="muted">Checks the Grok brain, coding-agent login and limit, voice, mic, and business.md.</p>
+    <ul id="doctorList" class="checks"></ul>
+    <div class="row">
+      <button id="doctorRun">Run again</button>
+      <button id="doctorClose" class="ghost">Close</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "growlord",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Growlord: 3D voice command center for The AI Empire Project",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server/index.js",
+    "doctor": "node server/doctor.js",
+    "test": "node --test test/*.test.js",
+    "demo": "node scripts/demo.js"
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  }
+}

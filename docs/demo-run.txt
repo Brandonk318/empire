@@ -1,0 +1,63 @@
+
+=== 1. Three questions (MOCK brain: offline keyword match, not Grok) ===
+Q: How do we get new leads?
+A: Free permit-readiness workshops co-hosted with trade schools (Philippines, Nigeria) AI-generated leads handed to closers (no cold calling)
+   -> camera flies to: leads (brain: mock)
+✔ district leads
+Q: Should we run paid ads right now?
+A: Free channels only by default (outreach, workshops, referrals, free education, organic social). Paid ads ONLY if the free channels aren't working, capped at about $200/month, and only with Brandon's approval. Paid platforms (if ever used): Facebook, Google, TikTok, YouTube.
+   -> camera flies to: ads (brain: mock)
+✔ district ads
+Q: How should I greet people in emails to the Philippines?
+A: Gmail. Tone is warm and respectful, with local greetings: "Magandang araw po" (Philippines), "Dear Sir/Ma" (Nigeria).
+   -> camera flies to: inbox (brain: mock)
+✔ district inbox
+
+=== 2. Approved build, end to end (real coding agent) ===
+Brief: briefs/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin.md
+Pre-flight: OK - 2.1.318 (Claude Code): logged in, under limit (test call answered "OK")
+Approved. Streaming progress:
+   · Pre-flight check of the coding agent...
+   · Pre-flight OK (2.1.318 (Claude Code))
+   · Handing off to claude in builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin
+   · Agent session started (claude-opus-5-5)
+   → Bash: ls -la && cat BRIEF.md && git log --oneline | head
+   → Bash: git status && git show --stat HEAD && ls -la .. ../.. ; find /home/user/empire -maxdepth 3 -name "*.md" | head -30
+   · tool error: This Bash command contains multiple operations. The following part requires approval: git status && git show --stat HEAD && ls -
+   → Bash: git -C /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin show --stat HEAD
+   · tool error: This command requires approval
+   → Glob: **/*.md
+   → Read: /home/user/empire/business.md
+   → Read: /home/user/empire/README.md
+   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin/index.html
+   · Flyer written. Next I'll tidy one CSS detail and check the page for errors before writing SUMMARY.md.
+   → Edit: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin/index.html
+   → Bash: cd /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin; grep -nE 'src=|href=|url\(|@imp
+   · tool error: Exit code 1
+   · No external references. Rendering it headless to confirm it loads cleanly:
+   → Bash: cd /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin; S=/tmp/claude-0/-home-user-empi
+   · tool error: A variable in this command can't be checked before it runs
+   → Bash: timeout 60 google-chrome --headless=new --no-sandbox --disable-gpu --enable-logging=stderr --window-size=850,1100 --scre
+   · tool error: This Bash command contains multiple operations. The following part requires approval: timeout 60 google-chrome --headless=new --
+   · Running Chrome needs approval here, so I'll check the HTML structure with Python's parser instead.
+   → Bash: python3 -I -c "
+   · tool error: This command requires approval
+   · I can't run commands without approval here, so I reviewed the file by hand: the tags are balanced, there's no JavaScript, and nothing loads 
+   → Write: /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin/SUMMARY.md
+   · I've made the flyer as a single `index.html` and written `SUMMARY.md`, both in the build folder. I haven't opened it in a browser yet. Runni
+   · Build finished in 14 turns. Output is in /home/user/empire/builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin
+✔ build succeeded -> builds/2026-11-04-a-one-page-html-flyer-for-the-free-permit-readin
+
+=== 3. Build while logged out (invalid credentials, empty config) ===
+Growlord: I wrote and saved the brief for a logged-out test page, but the coding agent isn't ready: Expired or missing login. The details are in the Workshop.
+✔ pre-flight caught it before handoff: expired_login
+   · Pre-flight check of the coding agent...
+   · Expired or missing login: Invalid API key · Fix external API key
+✔ failed clearly: Expired or missing login
+✔ brief kept at briefs/2026-11-04-a-logged-out-test-page.md
+Run it by hand:
+   cd "/home/user/empire/builds/2026-11-04-a-logged-out-test-page" && claude -p "Read BRIEF.md in this folder and build exactly what it describes, here in this folder. Do not send, post, email, publish, deploy, push to git, or contact anyone. When finished, write SUMMARY.md listing the files you made and how to check them." --permission-mode acceptEdits --allowedTools "Read,Write,Edit,Glob,Grep,Bash(ls:*),Bash(mkdir:*),Bash(cat:*),Bash(wc:*)"
+Full log: logs/chain.log
+
+All checks passed.
+exit=0
