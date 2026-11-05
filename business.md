@@ -14,6 +14,7 @@ Trade Circle is the community backend all of these feed into.
 ## Products
 - AI Office: AI tools for small service businesses (calls, leads, office work). Not fully live yet. Built on the Momoempire CRM.
 - Bookkeeping: AI does the books, a human bookkeeper reviews. Free limited tier (no card) -> $39.99 trial with 2 weeks free -> $99/mo "Momo" tier.
+- Bookkeeping add-on with AI Office ("Add your books", shown on the AI Office pricing page): Books Light $10/mo, Books Medium $20/mo, Books Heavy priced by volume.
 - Trade Circle: networking community and free trade education for contractors and artisans, internationally. The Academy is education, NOT certification. Extras: Cheers reward points (noncashable), merch, custom apparel, design-rights marketplace.
 - Groundwork: reentry pathway community. YEE Academy: young-entrepreneur sibling brand.
 - Shared Credit Tank: one prepaid balance across Empire sites; minimum top-up around $2.50 (proposed).
