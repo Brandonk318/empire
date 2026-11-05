@@ -22,7 +22,7 @@ Trade Circle is the community backend all of these feed into.
 
 ## Fees and money rules
 - Marketplace seller fee: 5% licensing, 10% outright sale. Default license cap $33.
-- Referrals: qualify on 4th paying referral; 25% of their payments for 6 months; no back pay.
+- Referrals: qualify on 4th paying referral (per site); no back pay. Share of what each referral actually pays, net of refunds: 25% months 1-6, 10% months 7-12, 2% months 13-24, 1% months 25-36; bonus 1% months 37-48 for referrals locked in at 250 active paying referrals.
 - Commissions are kept separate from credits and Cheers. Weekly payouts.
 - Target free-to-paid conversion: about 10%.
 
